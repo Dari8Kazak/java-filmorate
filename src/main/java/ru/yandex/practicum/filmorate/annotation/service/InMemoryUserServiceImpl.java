@@ -22,12 +22,10 @@ public class InMemoryUserServiceImpl implements UserService {
         if (user == null) {
             throw new ValidationException("User must not be null");
         }
-        if (user.getId() == null) {
-            user.setId(getNextId());
-        }
         if (user.getName() == null) {
             user.setName(user.getLogin());
         }
+        user.setId(getNextId());
         users.put(user.getId(), user);
         return user;
     }

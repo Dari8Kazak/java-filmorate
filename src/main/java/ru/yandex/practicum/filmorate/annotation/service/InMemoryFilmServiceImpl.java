@@ -20,9 +20,7 @@ public class InMemoryFilmServiceImpl implements FilmService {
 
     @Override
     public Film createFilm(Film film) {
-        if (film.getId() == null) {
-            film.setId(getNextId());
-        }
+        film.setId(getNextId());
         films.put(film.getId(), film);
         return film;
     }

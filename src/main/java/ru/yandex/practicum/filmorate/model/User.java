@@ -3,9 +3,9 @@ package ru.yandex.practicum.filmorate.model;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Data;
-import ru.yandex.practicum.filmorate.annotation.NotNullNoSpace;
 
 import java.time.LocalDate;
 
@@ -16,11 +16,11 @@ public class User {
 
     private String name;
 
-    @NotNullNoSpace
+    @Pattern(regexp = "^(?!.*\\s).+$")
     private String login;
 
     @Email
-    @NotNullNoSpace
+    @Pattern(regexp = "^(?!.*\\s).+$")
     private String email;
 
     @PastOrPresent(message = "Дата рождения не может быть в будущем")

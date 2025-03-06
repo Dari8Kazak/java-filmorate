@@ -34,7 +34,7 @@ public class FilmValidatorTest {
                 .name("Test Film")
                 .description("Test Description")
                 .releaseDate(LocalDate.now())
-                .duration(Duration.ofMinutes(30))
+                .duration(30L)
                 .build();
 
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
@@ -49,7 +49,7 @@ public class FilmValidatorTest {
                 .name("")
                 .description("Test Description")
                 .releaseDate(LocalDate.now())
-                .duration(Duration.ofMinutes(30))
+                .duration(30L)
                 .build();
 
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
@@ -64,7 +64,7 @@ public class FilmValidatorTest {
                 .name("Test Film")
                 .description("")
                 .releaseDate(LocalDate.now())
-                .duration(Duration.ofMinutes(30))
+                .duration(30L)
                 .build();
 
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
@@ -79,7 +79,7 @@ public class FilmValidatorTest {
                 .name("Test Film")
                 .description("Test Description")
                 .releaseDate(LocalDate.now())
-                .duration(Duration.ofMinutes(-30))
+                .duration(-30L)
                 .build();
 
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
@@ -94,7 +94,7 @@ public class FilmValidatorTest {
                 .name("Test Film")
                 .description("Test Description")
                 .releaseDate(LocalDate.parse("1895-12-27"))
-                .duration(Duration.ofMinutes(30))
+                .duration(30L)
                 .build();
 
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
