@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.annotation.service.FilmService;
-import ru.yandex.practicum.filmorate.annotation.service.InMemoryFilmServiceImpl;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -17,11 +16,11 @@ import java.util.Collection;
 @RequiredArgsConstructor
 @RequestMapping("/films")
 public class FilmController {
-    private final FilmService filmService = new InMemoryFilmServiceImpl();
+    private final FilmService filmService;
 
     @GetMapping
     public Collection<Film> findAllFilms() {
-        return filmService.findAll();
+        return filmService.findAllFilms();
     }
 
     @PostMapping

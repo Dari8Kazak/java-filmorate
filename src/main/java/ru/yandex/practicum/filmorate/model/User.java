@@ -16,11 +16,11 @@ public class User {
 
     private String name;
 
-    @Pattern(regexp = "^(?!.*\\s).+$")
+    @Pattern(regexp = "^(?!.*\\s).+$", message = "Логин не должен содержать пробелов")
     private String login;
 
-    @Email
-    @Pattern(regexp = "^(?!.*\\s).+$")
+    @Email(message = "Некорректный адрес электронной почты")
+    @Pattern(regexp = "^(?!.*\\s).+$", message = "Email не должен содержать пробелов")
     private String email;
 
     @PastOrPresent(message = "Дата рождения не может быть в будущем")
