@@ -31,6 +31,7 @@ public class ErrorHandler {
         log.error("Spring_validation_error {}", ex.getMessage());
         return buildErrorResponse(HttpStatus.BAD_REQUEST, ex, "SPRING_VALIDATION_ERROR");
     }
+
     private void logError(String logPrefix, Exception ex) {
         log.error("{} {}", logPrefix, ex.getMessage());
     }
