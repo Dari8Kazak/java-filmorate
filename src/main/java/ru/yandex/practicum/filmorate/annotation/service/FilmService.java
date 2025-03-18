@@ -23,15 +23,16 @@ public class FilmService {
 
     public void deleteFilm(Long id) {
         filmStorage.deleteFilm(id);
-        likes.remove(id);
     }
 
     public boolean addLikeFilm(Long filmId, Long userId) {
         Film film = getFilmById(filmId);
         User user = userStorage.findById(userId);
-        if (existsLikes(film.getId(), user.getId())) {
+        boolean existsLikes = existsLikes(film.getId(), user.getId());
+        if (existsLikes) {
             throw new ValidationException("Lke", "userId", "Пользователь уже ставил лайк");
         }
+
         return likes.computeIfAbsent(filmId, k -> new HashSet<>()).add(userId);
     }
 
@@ -43,7 +44,8 @@ public class FilmService {
     public boolean removeLikeFilm(Long filmId, Long userId) {
         Film film = getFilmById(filmId);
         User user = userStorage.findById(userId);
-        if (!existsLikes(film.getId(), user.getId())) {
+        boolean existsLikes = existsLikes(film.getId(), user.getId());
+        if (!existsLikes) {
             throw new ValidationException("Lke", "userId", " фильма нет лайков");
         }
         return removeLike(film.getId(), userId);
@@ -74,9 +76,9 @@ public class FilmService {
     }
 
     public List<Film> findPopularFilms(int count) {
-        int validCount = Math.max(count, 10);
+        int validCount = count <= 0 ? 10 : count;
         return findAllFilms().stream()
-                .sorted(Comparator.comparingInt((Film film) -> getLikes(film.getId()).size()).reversed())
+                .sorted(Comparator.comparingInt((Film film) -> likes.getOrDefault(film.getId(), Collections.emptySet()).size()).reversed())
                 .limit(validCount)
                 .toList();
     }

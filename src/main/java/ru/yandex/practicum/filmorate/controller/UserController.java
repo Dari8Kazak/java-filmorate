@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.annotation.service.UserService;
@@ -19,8 +20,8 @@ import java.util.List;
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
-    private final UserService userService;
     private final UserStorage userStorage;
+    private final UserService userService;
 
     @GetMapping
     public Collection<User> findAllUsers() {
@@ -30,13 +31,13 @@ public class UserController {
     @GetMapping("/{userId}/friends")
     public ResponseEntity<List<FriendDto>> findAllFriends(@PathVariable Long userId) {
         List<FriendDto> allFriends = userService.findAllFriend(userId);
-        return ResponseEntity.ok(allFriends);
+        return new ResponseEntity<>(allFriends, HttpStatus.OK);
     }
 
     @GetMapping("/{userId}/friends/common/{friendId}")
     public ResponseEntity<List<FriendDto>> findCommonFriends(@PathVariable Long userId, @PathVariable Long friendId) {
         List<FriendDto> commonFriends = userService.findCommonFriends(userId, friendId);
-        return ResponseEntity.ok(commonFriends);
+        return new ResponseEntity<>(commonFriends, HttpStatus.OK);
     }
 
     @PostMapping
@@ -53,19 +54,19 @@ public class UserController {
     @PutMapping
     public ResponseEntity<User> updateUser(@Valid @RequestBody User newUser) {
         User updateUser = userStorage.updateUser(newUser);
-        return ResponseEntity.ok(updateUser);
+        return new ResponseEntity<>(updateUser, HttpStatus.OK);
     }
 
     @PutMapping("/{userId}/friends/{friendId}")
     public ResponseEntity<Boolean> addFriend(@PathVariable Long userId, @PathVariable Long friendId) {
         boolean created = userService.addFriends(userId, friendId);
-        return ResponseEntity.ok(created);
+        return new ResponseEntity<>(created, HttpStatus.OK);
     }
 
     @DeleteMapping("/{userId}/friends/{friendId}")
     public ResponseEntity<Boolean> deleteFriend(@PathVariable Long userId, @PathVariable Long friendId) {
         boolean deleted = userService.deleteFriendById(userId, friendId);
-        return  ResponseEntity.ok(deleted);
+        return new ResponseEntity<>(deleted, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

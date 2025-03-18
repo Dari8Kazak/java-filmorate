@@ -27,7 +27,7 @@ public class InMemoryUserStorageImpl implements UserStorage {
         if (user.getId() == null) {
             user.setId(getNextId());
         }
-        if (user.getName() == null || user.getName().isEmpty()) {
+        if (user.getName() == null) {
             user.setName(user.getLogin());
         }
         users.put(user.getId(), user);
@@ -56,6 +56,7 @@ public class InMemoryUserStorageImpl implements UserStorage {
             throw new NotFoundException("User not found userId: " + user.getId());
         }
         log.info("Updating user {}", user.getId());
+        // Гарантированно обновляем пользователя если его id есть в мапе
         users.computeIfPresent(user.getId(), (id, oldUser) -> user);
         return users.get(user.getId());
     }
@@ -91,7 +92,7 @@ public class InMemoryUserStorageImpl implements UserStorage {
                 .stream()
                 .mapToLong(id -> id)
                 .max()
-                .orElse(1);
+                .orElse(0);
         return ++currentId;
     }
 }

@@ -33,6 +33,7 @@ public class UserService {
         return userFriends.stream()
                 .filter(friendsFriends::contains)
                 .collect(Collectors.toList());
+
     }
 
     public List<FriendDto> findAllFriend(Long userId) {
@@ -44,19 +45,24 @@ public class UserService {
     }
 
     public boolean addFriends(Long userId, Long friendId) {
-        if (userId.equals(friendId)) {
+        User user = getUserById(userId);
+        User friend = getUserById(friendId);
+        if (user.getId().equals(friend.getId())) {
             throw new ValidationException("User", "userId", "Нельзя добавить самого себя в друзья");
         }
-        if (userStorage.areFriends(userId, friendId)) {
-            throw new ValidationException("User", "userId", "Друг уже есть в друзья с id: " + userId);
+        boolean areFriends = userStorage.areFriends(user.getId(), friend.getId());
+        if (areFriends) {
+            throw new ValidationException("User", "userId", "Друг уже есть в друзья с id: " + user.getId());
         }
-        userStorage.addNewFriend(userId, friendId);
+        userStorage.addNewFriend(user.getId(), friendId);
         return true;
     }
 
     public boolean deleteFriendById(Long userId, Long friendId) {
-        if (userStorage.areFriends(userId, friendId)) {
-            userStorage.removeFriends(userId, friendId);
+        User user = getUserById(userId);
+        User friend = getUserById(friendId);
+        if (userStorage.areFriends(user.getId(), friendId)) {
+            userStorage.removeFriends(user.getId(), friend.getId());
         }
         return true;
     }
