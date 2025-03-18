@@ -43,9 +43,9 @@ public class InMemoryUserStorageImpl implements UserStorage {
                 .orElseThrow(() -> new NotFoundException("User not found userId: " + id));
     }
 
-//    public void save(User user) {
-//        users.put(user.getId(), user);
-//    }
+    public void save(User user) {
+        users.put(user.getId(), user);
+    }
 
     @Override
     public User updateUser(User user) {
