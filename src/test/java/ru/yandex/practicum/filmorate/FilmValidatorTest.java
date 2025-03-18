@@ -99,5 +99,4 @@ public class FilmValidatorTest {
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertFalse(violations.isEmpty(), "Ошибка: дата не должна быть раньше 28.12.1895");
     }
-
 }
