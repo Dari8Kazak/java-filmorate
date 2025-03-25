@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.*;
 
@@ -14,41 +12,73 @@ import java.util.*;
 @RequiredArgsConstructor
 public class FilmService {
     private final FilmStorage filmStorage;
-    private final UserStorage userStorage;
-    private final Map<Long, Set<Long>> likes = new HashMap<>();
+    private final Map<Long, Set<Long>> likes;
+    private final UserService userService;
 
-    public List<Film> findAllFilms() {
-        return filmStorage.findAll().stream().toList();
+    public Film createFilm(Film film) {
+        if (film == null) {
+            throw new ValidationException("Film", "film", "Film is null");
+        }
+        return filmStorage.createFilm(film);
     }
 
-    public void deleteFilm(Long id) {
-        filmStorage.deleteFilm(id);
+    public Film updateFilm(Film film) {
+        if (film == null) {
+            throw new ValidationException("Film", "film", "Film is null");
+        }
+        return filmStorage.updateFilm(film);
     }
+
+    public Film getFilmById(Long filmId) {
+        if (filmId == null) {
+            throw new ValidationException("Film", "id", "Film is null");
+        }
+        return filmStorage.getFilmById(filmId);
+    }
+
+    public void deleteFilm(Long filmId) {
+        if (filmId == null) {
+            throw new ValidationException("Film", "id", "Film is null");
+        }
+        filmStorage.deleteFilm(filmId);
+    }
+
+    public Collection<Film> findAllFilms() {
+        return filmStorage.findAll();
+    }
+
+//работа с лайками
 
     public boolean addLikeFilm(Long filmId, Long userId) {
         Film film = getFilmById(filmId);
-        User user = userStorage.findById(userId);
-        boolean existsLikes = existsLikes(film.getId(), user.getId());
-        if (existsLikes) {
+        if (film.getLikes().contains(userId)) {
             throw new ValidationException("Lke", "userId", "Пользователь уже ставил лайк");
         }
-
-        return likes.computeIfAbsent(filmId, k -> new HashSet<>()).add(userId);
-    }
-
-
-    public Film updateFilm(Film film) {
-        return filmStorage.updateFilm(film);
+        film.addLike(userId);
+        filmStorage.updateFilm(film);
+        return true;
     }
 
     public boolean removeLikeFilm(Long filmId, Long userId) {
         Film film = getFilmById(filmId);
-        User user = userStorage.findById(userId);
-        boolean existsLikes = existsLikes(film.getId(), user.getId());
-        if (!existsLikes) {
-            throw new ValidationException("Lke", "userId", " фильма нет лайков");
+        if (!film.getLikes().contains(userId)) {
+            throw new ValidationException("Lke", "userId", "У фильма нет лайков");
         }
-        return removeLike(film.getId(), userId);
+        film.removeLike(userId);
+        filmStorage.updateFilm(film);
+        return true;
+    }
+
+    public Set<Long> getLikes(Long filmId) {
+        return likes.getOrDefault(filmId, new HashSet<>());
+    }
+
+    public List<Film> findPopularFilms(int count) {
+        return findAllFilms()
+                .stream()
+                .sorted((f1, f2) -> Integer.compare(getLikes(f2.getId()).size(), getLikes(f1.getId()).size()))
+                .limit(count)
+                .toList();
     }
 
     private boolean removeLike(Long filmId, Long userId) {
@@ -63,27 +93,7 @@ public class FilmService {
         return false;
     }
 
-    public Film getFilmById(Long id) {
-        return filmStorage.getFilmById(id);
-    }
-
-    public Set<Long> getLikes(Long filmId) {
-        return likes.get(filmId);
-    }
-
     private boolean existsLikes(Long filmId, Long userId) {
         return likes.containsKey(filmId) && likes.get(filmId).contains(userId);
-    }
-
-    public List<Film> findPopularFilms(int count) {
-        int validCount = count <= 0 ? 10 : count;
-        return findAllFilms().stream()
-                .sorted(Comparator.comparingInt((Film film) -> likes.getOrDefault(film.getId(), Collections.emptySet()).size()).reversed())
-                .limit(validCount)
-                .toList();
-    }
-
-    public Film createFilm(Film film) {
-        return filmStorage.createFilm(film);
     }
 }

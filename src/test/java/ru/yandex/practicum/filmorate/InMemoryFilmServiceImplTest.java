@@ -44,10 +44,10 @@ class InMemoryFilmServiceImplTest {
     @DisplayName("Успешное обновление фильма")
     @Test
     void testUpdateFilm() {
-        film.setId(2L);
+        film.setId(1L);
         filmStorage.createFilm(film);
         Film updatedFilm = Film.builder()
-                .id(2L)
+                .id(1L)
                 .name("Film 2")
                 .duration(Duration.ofMinutes(30).toMinutes())
                 .description("Film 2 description")

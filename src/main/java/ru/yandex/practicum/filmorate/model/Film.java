@@ -7,9 +7,12 @@ import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import ru.yandex.practicum.filmorate.annotation.ValidReleaseDate;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Builder
 @Data
@@ -30,4 +33,23 @@ public class Film {
     @PositiveOrZero
     @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Long duration;
+
+    private Set<Long> likes = new HashSet<>();
+
+    public void addLike(Long userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException("Идентификатор пользователя не может быть null");
+        }
+        likes.add(userId);
+    }
+
+    public void removeLike(Long userId) {
+        if (userId != null) {
+            likes.remove(userId);
+        }
+    }
+
+    public int getLikesCount() {
+        return likes.size();
+    }
 }

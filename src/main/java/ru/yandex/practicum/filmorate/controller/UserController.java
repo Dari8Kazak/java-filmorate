@@ -10,7 +10,6 @@ import ru.yandex.practicum.filmorate.annotation.service.UserService;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.FriendDto;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Collection;
 import java.util.List;
@@ -20,12 +19,11 @@ import java.util.List;
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
-    private final UserStorage userStorage;
     private final UserService userService;
 
     @GetMapping
     public Collection<User> findAllUsers() {
-        return userStorage.findAll();
+        return userService.findAllUsers();
     }
 
     @GetMapping("/{userId}/friends")
@@ -35,26 +33,26 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/friends/common/{friendId}")
-    public ResponseEntity<List<FriendDto>> findCommonFriends(@PathVariable Long userId, @PathVariable Long friendId) {
-        List<FriendDto> commonFriends = userService.findCommonFriends(userId, friendId);
+    public ResponseEntity<List<Long>> findCommonFriends(@PathVariable Long userId, @PathVariable Long friendId) {
+        List<Long> commonFriends = userService.findCommonFriends(userId, friendId);
         return new ResponseEntity<>(commonFriends, HttpStatus.OK);
     }
 
     @PostMapping
-    public User createUser(@Valid @RequestBody User user) {
+    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
         try {
-            userStorage.createUser(user);
-            log.info("User created: {}", user);
+            User createdUser = userService.createUser(user);
+            log.info("User created: {}", createdUser);
+            return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
         } catch (ValidationException e) {
             log.error(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return user;
     }
 
     @PutMapping
     public ResponseEntity<User> updateUser(@Valid @RequestBody User newUser) {
-        User updateUser = userStorage.updateUser(newUser);
-        return new ResponseEntity<>(updateUser, HttpStatus.OK);
+        return new ResponseEntity<>(userService.updateUser(newUser), HttpStatus.OK);
     }
 
     @PutMapping("/{userId}/friends/{friendId}")
@@ -70,11 +68,13 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable long id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable long id) {
         try {
-            userStorage.deleteUser(id);
+            userService.deleteUser(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (ValidationException e) {
             log.error(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 }

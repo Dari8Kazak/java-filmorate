@@ -13,47 +13,44 @@ import java.util.Map;
 @Slf4j
 @Component
 public class InMemoryFilmStorageImpl implements FilmStorage {
-
     private final Map<Long, Film> films = new HashMap<>();
 
     @Override
-    public Collection<Film> findAll() {
-        return films.values();
-    }
-
-    @Override
     public Film createFilm(Film film) {
-        if (film.getId() == null) {
-            film.setId(getNextId());
-        }
+        film.setId(getNextId());
         films.put(film.getId(), film);
         return film;
     }
 
     @Override
     public Film updateFilm(Film film) {
-        if (film == null) {
-            throw new ValidationException("Film", "film", "Film is null");
-        }
         if (!films.containsKey(film.getId())) {
             throw new NotFoundException("Film not found");
         }
         log.info("Updating film {}", film.getId());
         films.computeIfPresent(film.getId(), (id, oldUser) -> film);
-
         return films.get(film.getId());
     }
 
+    public Film getFilmById(Long filmId) {
+        Film film = films.get(filmId);
+        if (film == null) {
+            throw new NotFoundException("Film not found for filmId " + filmId);
+        }
+        return films.get(filmId);
+    }
+
     @Override
-    public void deleteFilm(Long id) {
-        if (id == null) {
-            throw new ValidationException("Film", "id", "Film is null");
+    public void deleteFilm(Long filmId) {
+        if (!films.containsKey(filmId)) {
+            throw new ValidationException("Film", "id", "Film is not found filmId: " + filmId);
         }
-        if (films.containsKey(id)) {
-            films.remove(id);
-        } else {
-            throw new NotFoundException("Film not found");
-        }
+        films.remove(filmId);
+    }
+
+    @Override
+    public Collection<Film> findAll() {
+        return films.values();
     }
 
     private Long getNextId() {
@@ -63,15 +60,5 @@ public class InMemoryFilmStorageImpl implements FilmStorage {
                 .max()
                 .orElse(0);
         return ++currentId;
-    }
-
-    public Film getFilmById(Long filmId) {
-        if (filmId == null) {
-            throw new ValidationException("Film", "id", "Film is null");
-        }
-        if (!films.containsKey(filmId)) {
-            throw new NotFoundException("Film not found filmId " + filmId);
-        }
-        return films.get(filmId);
     }
 }
