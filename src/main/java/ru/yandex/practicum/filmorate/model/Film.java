@@ -7,6 +7,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import ru.yandex.practicum.filmorate.annotation.ValidReleaseDate;
 
 import java.time.LocalDate;
@@ -33,6 +34,7 @@ public class Film {
     @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Long duration;
 
+    @Getter
     private Set<Long> likes = new HashSet<>();
 
     public void addLike(Long userId) {

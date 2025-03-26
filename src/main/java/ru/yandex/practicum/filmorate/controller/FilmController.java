@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.annotation.service.FilmService;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
 import java.util.List;
@@ -40,25 +41,29 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film createFilm(@Valid @RequestBody Film film) {
+    public ResponseEntity<Film> createFilm(@Valid @RequestBody Film film) {
         try {
             filmService.createFilm(film);
             log.info("Film created: {}", film);
+            return ResponseEntity.status(HttpStatus.CREATED).body(film);
         } catch (ValidationException e) {
-            log.error(e.getMessage());
+            log.error("Validation error: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            log.error("Internal server error: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-        return film;
     }
 
-    @PutMapping("/{id}/like/{userId}")
+       @PutMapping("/{id}/like/{userId}")
     public ResponseEntity<Boolean> likeFilm(@PathVariable Long id, @PathVariable Long userId) {
         boolean isLikeFilm = filmService.addLikeFilm(id, userId);
         return new ResponseEntity<>(isLikeFilm, HttpStatus.OK);
     }
 
     @PutMapping
-    public Film updateFilm(@Valid @RequestBody Film newFilm) {
-        return filmService.updateFilm(newFilm);
+            public ResponseEntity<Film> updateFilm(@Valid @RequestBody Film newFilm) {
+            return new ResponseEntity<>(filmService.updateFilm(newFilm), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
