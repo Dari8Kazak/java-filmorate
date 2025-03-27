@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.annotation.service.FilmService;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
 import java.util.List;
@@ -42,20 +41,12 @@ public class FilmController {
 
     @PostMapping
     public ResponseEntity<Film> createFilm(@Valid @RequestBody Film film) {
-        try {
-            filmService.createFilm(film);
-            log.info("Film created: {}", film);
-            return ResponseEntity.status(HttpStatus.CREATED).body(film);
-        } catch (ValidationException e) {
-            log.error("Validation error: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        } catch (Exception e) {
-            log.error("Internal server error: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+            Film createdFilm = filmService.createFilm(film); // Создаем фильм и получаем объект с заполненными полями
+            log.info("Film created: {}", createdFilm);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdFilm); // Возвращаем созданный фильм
     }
 
-       @PutMapping("/{id}/like/{userId}")
+    @PutMapping("/{id}/like/{userId}")
     public ResponseEntity<Boolean> likeFilm(@PathVariable Long id, @PathVariable Long userId) {
         boolean isLikeFilm = filmService.addLikeFilm(id, userId);
         return new ResponseEntity<>(isLikeFilm, HttpStatus.OK);
@@ -81,5 +72,4 @@ public class FilmController {
         boolean removed = filmService.removeLikeFilm(id, userId);
         return new ResponseEntity<>(removed, HttpStatus.OK);
     }
-
 }

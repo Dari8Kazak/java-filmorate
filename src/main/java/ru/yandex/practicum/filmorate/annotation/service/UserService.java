@@ -52,8 +52,6 @@ public class UserService {
         return userStorage.findAll();
     }
 
-    //работа с друзьями
-
     public boolean addFriends(Long userId, Long friendId) {
         User user = getUserById(userId);
         User friend = getUserById(friendId);
@@ -69,7 +67,7 @@ public class UserService {
         return true;
     }
 
-    public boolean deleteFriendById(Long userId, Long friendId) {
+    public boolean removeFriendById(Long userId, Long friendId) {
         User user = getUserById(userId);
         User friend = getUserById(friendId);
 

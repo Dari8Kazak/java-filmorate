@@ -13,7 +13,6 @@ import java.util.*;
 public class FilmService {
     private final FilmStorage filmStorage;
     private final Map<Long, Set<Long>> likes;
-    private final UserService userService;
 
     public Film createFilm(Film film) {
         if (film == null) {
@@ -47,8 +46,6 @@ public class FilmService {
         return filmStorage.findAll();
     }
 
-//работа с лайками
-
     public boolean addLikeFilm(Long filmId, Long userId) {
         Film film = getFilmById(filmId);
         if (film.getLikes().contains(userId)) {
@@ -70,7 +67,7 @@ public class FilmService {
     }
 
     public Set<Long> getLikes(Long filmId) {
-        return likes.getOrDefault(filmId, new HashSet<>());
+        return likes.getOrDefault(filmId, Collections.emptySet());
     }
 
     public List<Film> findPopularFilms(int count) {

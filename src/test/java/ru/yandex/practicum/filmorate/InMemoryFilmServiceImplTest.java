@@ -18,7 +18,6 @@ class InMemoryFilmServiceImplTest {
     private FilmStorage filmStorage;
     private Film film;
 
-
     @BeforeEach
     void setUp() {
         filmStorage = new InMemoryFilmStorageImpl();

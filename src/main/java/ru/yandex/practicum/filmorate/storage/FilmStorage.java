@@ -16,5 +16,4 @@ public interface FilmStorage {
 
     Collection<Film> findAll();
 
-
 }

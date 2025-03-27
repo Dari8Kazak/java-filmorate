@@ -63,7 +63,7 @@ public class UserController {
 
     @DeleteMapping("/{userId}/friends/{friendId}")
     public ResponseEntity<Boolean> deleteFriend(@PathVariable Long userId, @PathVariable Long friendId) {
-        boolean deleted = userService.deleteFriendById(userId, friendId);
+        boolean deleted = userService.removeFriendById(userId, friendId);
         return new ResponseEntity<>(deleted, HttpStatus.OK);
     }
 
