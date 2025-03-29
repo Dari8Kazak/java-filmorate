@@ -44,12 +44,10 @@ public class Film {
         if (likes == null) {
             this.likes = new HashSet<>();
         }
-            likes.add(userId);
-            }
+        likes.add(userId);
+    }
 
     public void removeLike(Long userId) {
-        if (userId != null) {
-            likes.remove(userId);
-        }
+        likes.remove(userId);
     }
 }

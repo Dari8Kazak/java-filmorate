@@ -74,6 +74,7 @@ public class FilmController {
 
     @DeleteMapping("/{id}/like/{userId}")
     public ResponseEntity<Boolean> removeLike(@PathVariable Long id, @PathVariable Long userId) {
+        log.info("Получен запрос на удаление лайка фильму с ID={} от пользователя ID={}", id, userId);
         boolean removed = filmService.removeLikeFilm(id, userId);
         return new ResponseEntity<>(removed, HttpStatus.OK);
     }
