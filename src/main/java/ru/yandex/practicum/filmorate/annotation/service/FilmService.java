@@ -46,14 +46,20 @@ public class FilmService {
         return filmStorage.findAll();
     }
 
-    public boolean addLikeFilm(Long filmId, Long userId) {
-        Film film = getFilmById(filmId);
-        if (film.getLikes().contains(userId)) {
+    public void addLikeFilm(Long filmId, Long userId) {
+        if (filmId == null) {
+            throw new IllegalArgumentException("Идентификатор фильма не может быть null");
+        }
+        if (userId == null) {
+            throw new IllegalArgumentException("Идентификатор пользователя не может быть null");
+        }
+        Film film = filmStorage.getFilmById(filmId);
+
+        if (likes.containsValue(userId)) {
             throw new ValidationException("Lke", "userId", "Пользователь уже ставил лайк");
         }
         film.addLike(userId);
         filmStorage.updateFilm(film);
-        return true;
     }
 
     public boolean removeLikeFilm(Long filmId, Long userId) {
@@ -88,9 +94,5 @@ public class FilmService {
             return true;
         }
         return false;
-    }
-
-    private boolean existsLikes(Long filmId, Long userId) {
-        return likes.containsKey(filmId) && likes.get(filmId).contains(userId);
     }
 }

@@ -29,12 +29,17 @@ public class User {
     @NotNull(message = "Дата рождения не может быть пустой")
     private LocalDate birthday;
 
+    @Builder.Default
     private Set<Long> friends = new HashSet<>();
 
     public void addFriend(Long id) {
+        if (friends == null) {
+            this.friends = new HashSet<>();
+        }
         if (id == null) {
             throw new IllegalArgumentException("Идентификатор друга не может быть null");
         }
+
         friends.add(id);
     }
 

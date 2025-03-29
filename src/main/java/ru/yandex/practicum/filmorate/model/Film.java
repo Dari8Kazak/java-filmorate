@@ -37,14 +37,15 @@ public class Film {
     @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Long duration;
 
+    @Builder.Default
     private Set<Long> likes = new HashSet<>();
 
     public void addLike(Long userId) {
-        if (userId == null) {
-            throw new IllegalArgumentException("Идентификатор пользователя не может быть null");
+        if (likes == null) {
+            this.likes = new HashSet<>();
         }
-        likes.add(userId);
-    }
+            likes.add(userId);
+            }
 
     public void removeLike(Long userId) {
         if (userId != null) {

@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,9 @@ import java.util.Set;
 @RequiredArgsConstructor
 @RequestMapping("/films")
 public class FilmController {
-    private final FilmService filmService;
+
+    @Autowired
+    public final FilmService filmService;
 
     @GetMapping
     public Collection<Film> findAllFilms() {
@@ -41,15 +44,17 @@ public class FilmController {
 
     @PostMapping
     public ResponseEntity<Film> createFilm(@Valid @RequestBody Film film) {
-            Film createdFilm = filmService.createFilm(film); // Создаем фильм и получаем объект с заполненными полями
+            Film createdFilm = filmService.createFilm(film);
             log.info("Film created: {}", createdFilm);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdFilm); // Возвращаем созданный фильм
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdFilm);
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public ResponseEntity<Boolean> likeFilm(@PathVariable Long id, @PathVariable Long userId) {
-        boolean isLikeFilm = filmService.addLikeFilm(id, userId);
-        return new ResponseEntity<>(isLikeFilm, HttpStatus.OK);
+    public ResponseEntity<Film> likeFilm(@PathVariable Long id, @PathVariable Long userId) {
+        log.info("Получен запрос на установку лайка фильму с ID={} от пользователя ID={}", id, userId);
+        filmService.addLikeFilm(id, userId);
+        Film updatedFilm = filmService.getFilmById(id);
+        return ResponseEntity.ok(updatedFilm);
     }
 
     @PutMapping

@@ -3,6 +3,9 @@ package ru.yandex.practicum.filmorate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import ru.yandex.practicum.filmorate.annotation.service.FilmService;
+import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -11,6 +14,7 @@ import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorageImpl;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,6 +25,7 @@ class InMemoryFilmServiceImplTest {
     @BeforeEach
     void setUp() {
         filmStorage = new InMemoryFilmStorageImpl();
+
         film = Film.builder()
                 .id(1L)
                 .name("Film 1")
@@ -75,5 +80,22 @@ class InMemoryFilmServiceImplTest {
         assertTrue(all.contains(film));
         filmStorage.deleteFilm(film.getId());
         assertTrue(all.isEmpty());
+    }
+
+    @Test
+    void addLikeFilm_ShouldAddLike_WhenValidFilmAndUser() {
+        filmStorage.createFilm(film);
+        film = filmStorage.getFilmById(film.getId());
+        System.out.println(film);
+        System.out.println(film.getLikes());
+        Set<Long> likes = film.getLikes();
+
+        film.addLike(1L);
+        System.out.println(film);
+        film.addLike(2L);
+        System.out.println(film);
+        film.addLike(1L);
+        System.out.println(likes);
+
     }
 }
