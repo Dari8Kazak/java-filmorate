@@ -1,26 +1,23 @@
 package ru.yandex.practicum.filmorate.annotation.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
-import ru.yandex.practicum.filmorate.model.FriendDto;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final UserStorage userStorage;
+    @Autowired
+    private UserStorage userStorage;
     private final Map<Long, Set<Long>> friends;
 
     public User createUser(User user) {
-        if (user == null) {
-            throw new ValidationException("User", "user", "User must not be null");
-        }
+        Objects.requireNonNull(user, "Пользователь не должен быть null");
         if (user.getName() == null) {
             user.setName(user.getLogin());
         }
@@ -28,23 +25,17 @@ public class UserService {
     }
 
     public User updateUser(User user) {
-        if (user == null) {
-            throw new ValidationException("User", "user", "User is null");
-        }
+        Objects.requireNonNull(user, "Пользователь не должен быть null");
         return userStorage.updateUser(user);
     }
 
-    public User getUserById(Long userId) {
-        if (userId == null) {
-            throw new NotFoundException("User not found userId: " + userId);
-        }
+    public User getUserById(Long userId) throws NotFoundException {
+        Objects.requireNonNull(userId, "Идентификатор пользователя не может быть null");
         return userStorage.getUserById(userId);
     }
 
     public void deleteUser(Long userId) {
-        if (userId == null) {
-            throw new ValidationException("User", "id", "User is null");
-        }
+        Objects.requireNonNull(userId, "Идентификатор пользователя не может быть null");
         userStorage.deleteUser(userId);
     }
 
@@ -52,51 +43,35 @@ public class UserService {
         return userStorage.findAll();
     }
 
-    public boolean addFriends(Long userId, Long friendId) {
-        User user = getUserById(userId);
-        User friend = getUserById(friendId);
-
-        if (user.getId().equals(friend.getId())) {
-            throw new ValidationException("User", "userId", "Нельзя добавить самого себя в друзья");
-        }
-        if (findFriends(userId).contains(friendId)) {
-            throw new ValidationException("User", "userId", "Друг уже есть в друзья с id: " + friendId);
-        }
-        user.addFriend(friendId);
-        friend.addFriend(userId);
-        return true;
+    public void addFriend(Long userId, Long friendId) {
+        userStorage.getUserById(userId);
+        userStorage.getUserById(friendId);
+        userStorage.addFriend(userId, friendId);
     }
 
-    public boolean removeFriendById(Long userId, Long friendId) {
-        User user = getUserById(userId);
-        User friend = getUserById(friendId);
-
-        if (!findFriends(userId).contains(friendId)) {
-            throw new ValidationException("User", "friendId", "Друг с id " + friendId + " не найден в списке друзей");
-        }
-        user.removeFriend(friendId);
-        friend.removeFriend(userId);
-        return true;
+    public void removeFriend(Long userId, Long friendId) {
+        userStorage.getUserById(userId);
+        userStorage.getUserById(friendId);
+        userStorage.removeFriend(userId, friendId);
     }
 
-    public List<FriendDto> findAllFriend(Long userId) {
-        return findFriends(userId)
-                .stream()
-                .map(FriendDto::new)
-                .collect(Collectors.toList());
+    public List<User> getFriends(Long userId) {
+        userStorage.getUserById(userId);
+        return userStorage.getFriends(userId).stream()
+                .map(userStorage::getUserById)
+                .toList();
     }
 
-    public List<Long> findCommonFriends(Long userId, Long friendId) {
-        User user = getUserById(userId);
-        User friend = getUserById(friendId);
-        Set<Long> userFriends = findFriends(user.getId());
-        Set<Long> friendsFriends = findFriends(friend.getId());
+    public List<User> getCommonFriends(Long userId, Long otherUserId) {
+        userStorage.getUserById(userId);
+        userStorage.getUserById(otherUserId);
+
+        Set<Long> userFriends = userStorage.getFriends(userId);
+        Set<Long> otherUserFriends = userStorage.getFriends(otherUserId);
+
         return userFriends.stream()
-                .filter(friendsFriends::contains)
-                .collect(Collectors.toList());
-    }
-
-    public Set<Long> findFriends(Long userId) {
-        return friends.getOrDefault(userId, Collections.emptySet());
+                .filter(otherUserFriends::contains)
+                .map(userStorage::getUserById)
+                .toList();
     }
 }

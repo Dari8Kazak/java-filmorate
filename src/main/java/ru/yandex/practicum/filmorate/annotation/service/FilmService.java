@@ -45,8 +45,8 @@ public class FilmService {
         filmStorage.deleteFilm(filmId);
     }
 
-    public Collection<Film> findAllFilms() {
-        return filmStorage.findAll();
+    public Collection<Film> getAllFilms() {
+        return filmStorage.getAllFilms();
     }
 
     public void addLikeFilm(Long filmId, Long userId) {
@@ -88,23 +88,10 @@ public class FilmService {
         return likes.getOrDefault(filmId, Collections.emptySet());
     }
 
-    public List<Film> findPopularFilms(int count) {
-        return findAllFilms()
-                .stream()
-                .sorted((f1, f2) -> Integer.compare(getLikes(f2.getId()).size(), getLikes(f1.getId()).size()))
+    public List<Film> getMostPopularFilms(int count) {
+        return filmStorage.getAllFilms().stream()
+                .sorted(Comparator.comparingInt(f -> filmStorage.getLikes(f.getId()).size()))
                 .limit(count)
                 .toList();
-    }
-
-    private boolean removeLike(Long filmId, Long userId) {
-        Set<Long> userLikes = getLikes(filmId);
-        if (userLikes != null) {
-            userLikes.remove(userId);
-            if (userLikes.isEmpty()) {
-                likes.remove(filmId);
-            }
-            return true;
-        }
-        return false;
     }
 }

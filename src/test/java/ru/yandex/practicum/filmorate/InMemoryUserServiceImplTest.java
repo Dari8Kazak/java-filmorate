@@ -17,6 +17,7 @@ class InMemoryUserServiceImplTest {
     private UserStorage userService;
     private User user;
 
+
     @BeforeEach
     void setUp() {
         userService = new InMemoryUserStorageImpl();

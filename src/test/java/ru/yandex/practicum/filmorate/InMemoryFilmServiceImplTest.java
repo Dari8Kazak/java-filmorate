@@ -36,7 +36,7 @@ class InMemoryFilmServiceImplTest {
     @Test
     void testCreateFilm() {
         filmStorage.createFilm(film);
-        Collection<Film> allFilms = filmStorage.findAll();
+        Collection<Film> allFilms = filmStorage.getAllFilms();
 
         assertTrue(allFilms.contains(film));
         assertEquals(1, allFilms.size());
@@ -73,7 +73,7 @@ class InMemoryFilmServiceImplTest {
     @Test
     void deleteFilm() {
         filmStorage.createFilm(film);
-        Collection<Film> all = filmStorage.findAll();
+        Collection<Film> all = filmStorage.getAllFilms();
         assertTrue(all.contains(film));
         filmStorage.deleteFilm(film.getId());
         assertTrue(all.isEmpty());

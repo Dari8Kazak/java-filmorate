@@ -26,7 +26,7 @@ public class InMemoryUserStorageImpl implements UserStorage {
         if (!users.containsKey(user.getId())) {
             throw new NotFoundException("User not found userId: " + user.getId());
         }
-        log.info("Updating user {}", user.getId());
+        log.info("обновление юзера {}", user.getId());
         users.computeIfPresent(user.getId(), (id, oldUser) -> user);
         return users.get(user.getId());
     }
@@ -36,7 +36,6 @@ public class InMemoryUserStorageImpl implements UserStorage {
         if (!users.containsKey(userId)) {
             throw new NotFoundException("User not found userId: " + userId);
         }
-        log.info("Updating user {}", userId);
         return users.get(userId);
     }
 
@@ -60,5 +59,22 @@ public class InMemoryUserStorageImpl implements UserStorage {
                 .max()
                 .orElse(0);
         return ++currentId;
+    }
+
+    @Override
+    public void addFriend(Long userId, Long friendId) {
+        friends.computeIfAbsent(userId, k -> new HashSet<>()).add(friendId);
+        friends.computeIfAbsent(friendId, k -> new HashSet<>()).add(userId);
+    }
+
+    @Override
+    public Set<Long> getFriends(Long userId) {
+        return friends.getOrDefault(userId, Collections.emptySet());
+    }
+
+    @Override
+    public void removeFriend(Long userId, Long friendId) {
+        friends.getOrDefault(userId, Collections.emptySet()).remove(friendId);
+        friends.getOrDefault(friendId, Collections.emptySet()).remove(userId);
     }
 }

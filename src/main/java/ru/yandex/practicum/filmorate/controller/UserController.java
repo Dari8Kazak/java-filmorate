@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.annotation.service.UserService;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
-import ru.yandex.practicum.filmorate.model.FriendDto;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
@@ -26,28 +25,21 @@ public class UserController {
         return userService.findAllUsers();
     }
 
-    @GetMapping("/{userId}/friends")
-    public ResponseEntity<List<FriendDto>> findAllFriends(@PathVariable Long userId) {
-        List<FriendDto> allFriends = userService.findAllFriend(userId);
-        return new ResponseEntity<>(allFriends, HttpStatus.OK);
+    @GetMapping("/{id}/friends")
+    public List<User> getFriends(@PathVariable Long id) {
+        return userService.getFriends(id);
     }
 
-    @GetMapping("/{userId}/friends/common/{friendId}")
-    public ResponseEntity<List<Long>> findCommonFriends(@PathVariable Long userId, @PathVariable Long friendId) {
-        List<Long> commonFriends = userService.findCommonFriends(userId, friendId);
-        return new ResponseEntity<>(commonFriends, HttpStatus.OK);
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public List<User> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId) {
+        return userService.getCommonFriends(id, otherId);
     }
 
     @PostMapping
     public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
-        try {
-            User createdUser = userService.createUser(user);
-            log.info("User created: {}", createdUser);
-            return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
-        } catch (ValidationException e) {
-            log.error(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        User createdUser = userService.createUser(user);
+        log.info("Создан новый пользователь с Id: {}", createdUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
     @PutMapping
@@ -55,16 +47,16 @@ public class UserController {
         return new ResponseEntity<>(userService.updateUser(newUser), HttpStatus.OK);
     }
 
-    @PutMapping("/{userId}/friends/{friendId}")
-    public ResponseEntity<Boolean> addFriend(@PathVariable Long userId, @PathVariable Long friendId) {
-        boolean created = userService.addFriends(userId, friendId);
-        return new ResponseEntity<>(created, HttpStatus.OK);
+    @PutMapping("/{id}/friends/{friendId}")
+    public ResponseEntity<Void> addFriend(@PathVariable Long id, @PathVariable Long friendId) {
+        userService.addFriend(id, friendId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{userId}/friends/{friendId}")
-    public ResponseEntity<Boolean> deleteFriend(@PathVariable Long userId, @PathVariable Long friendId) {
-        boolean deleted = userService.removeFriendById(userId, friendId);
-        return new ResponseEntity<>(deleted, HttpStatus.OK);
+    public ResponseEntity<Void> deleteFriend(@PathVariable Long userId, @PathVariable Long friendId) {
+        userService.removeFriend(userId, friendId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

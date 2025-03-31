@@ -36,12 +36,15 @@ public class User {
         if (friends == null) {
             this.friends = new HashSet<>();
         }
-        if (id == null) {
-            throw new IllegalArgumentException("Идентификатор друга не может быть null");
-        }
 
         friends.add(id);
     }
+
+
+
+
+
+
 
     public void removeFriend(Long id) {
         if (id == null) {

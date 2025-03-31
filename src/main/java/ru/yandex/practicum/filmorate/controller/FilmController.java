@@ -26,14 +26,16 @@ public class FilmController {
     public final FilmService filmService;
 
     @GetMapping
-    public Collection<Film> findAllFilms() {
-        return filmService.findAllFilms();
+    public Collection<Film> getAllFilms() {
+        log.info("Запрошены все фильмы");
+        return filmService.getAllFilms();
     }
 
     @GetMapping("/popular")
-    public ResponseEntity<List<Film>> findPopularFilms(@RequestParam (defaultValue = "10") @Positive int count) {
-        List<Film> popularFilms = filmService.findPopularFilms(count);
-        return new ResponseEntity<>(popularFilms, HttpStatus.OK);
+    public List<Film> getMostPopularFilms(@RequestParam @Positive int count) {
+        log.info("Запрошено {} самых популярных фильмов", filmService.getMostPopularFilms(count));
+
+        return filmService.getMostPopularFilms(count);
     }
 
     @GetMapping("/{id}")
@@ -44,9 +46,9 @@ public class FilmController {
 
     @PostMapping
     public ResponseEntity<Film> createFilm(@Valid @RequestBody Film film) {
-            Film createdFilm = filmService.createFilm(film);
-            log.info("Film created: {}", createdFilm);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdFilm);
+        Film createdFilm = filmService.createFilm(film);
+        log.info("Film created: {}", createdFilm);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdFilm);
     }
 
     @PutMapping("/{id}/like/{userId}")
@@ -58,8 +60,8 @@ public class FilmController {
     }
 
     @PutMapping
-            public ResponseEntity<Film> updateFilm(@Valid @RequestBody Film newFilm) {
-            return new ResponseEntity<>(filmService.updateFilm(newFilm), HttpStatus.OK);
+    public ResponseEntity<Film> updateFilm(@Valid @RequestBody Film newFilm) {
+        return new ResponseEntity<>(filmService.updateFilm(newFilm), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
