@@ -40,12 +40,6 @@ public class User {
         friends.add(id);
     }
 
-
-
-
-
-
-
     public void removeFriend(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("Идентификатор друга не может быть null");

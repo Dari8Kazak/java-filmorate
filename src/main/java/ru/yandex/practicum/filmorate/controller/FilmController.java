@@ -35,7 +35,6 @@ public class FilmController {
     public List<Film> getPopularFilms(@RequestParam(defaultValue = "10")@Positive int count) {
         log.info("Запрошено {} самых популярных фильмов", count);
         log.info("Запрошено {} самых популярных фильмов", filmService.getPopularFilms(count));
-
         return filmService.getPopularFilms(count);
     }
 
