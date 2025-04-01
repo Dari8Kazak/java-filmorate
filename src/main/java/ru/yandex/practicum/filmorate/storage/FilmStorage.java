@@ -17,6 +17,4 @@ public interface FilmStorage {
 
     Collection<Film> getAllFilms();
 
-    Set<Long> getLikes(Long filmId);
-
 }

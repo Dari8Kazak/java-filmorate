@@ -32,10 +32,11 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> getMostPopularFilms(@RequestParam @Positive int count) {
-        log.info("Запрошено {} самых популярных фильмов", filmService.getMostPopularFilms(count));
+    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10")@Positive int count) {
+        log.info("Запрошено {} самых популярных фильмов", count);
+        log.info("Запрошено {} самых популярных фильмов", filmService.getPopularFilms(count));
 
-        return filmService.getMostPopularFilms(count);
+        return filmService.getPopularFilms(count);
     }
 
     @GetMapping("/{id}")

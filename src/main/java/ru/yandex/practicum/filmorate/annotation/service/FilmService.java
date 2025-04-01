@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -18,30 +19,22 @@ public class FilmService {
     private final Map<Long, Set<Long>> likes;
 
     public Film createFilm(Film film) {
-        if (film == null) {
-            throw new ValidationException("Film", "film", "Film is null");
-        }
+        Objects.requireNonNull(film, "film не должен быть null");
         return filmStorage.createFilm(film);
     }
 
     public Film updateFilm(Film film) {
-        if (film == null) {
-            throw new ValidationException("Film", "film", "Film is null");
-        }
+        Objects.requireNonNull(film, "film не должен быть null");
         return filmStorage.updateFilm(film);
     }
 
     public Film getFilmById(Long filmId) {
-        if (filmId == null) {
-            throw new ValidationException("Film", "id", "Film is null");
-        }
+        Objects.requireNonNull(filmId, "filmId не должен быть null");
         return filmStorage.getFilmById(filmId);
     }
 
     public void deleteFilm(Long filmId) {
-        if (filmId == null) {
-            throw new ValidationException("Film", "id", "Film is null");
-        }
+        Objects.requireNonNull(filmId, "filmId не должен быть null");
         filmStorage.deleteFilm(filmId);
     }
 
@@ -50,12 +43,9 @@ public class FilmService {
     }
 
     public void addLikeFilm(Long filmId, Long userId) {
-        if (filmId == null) {
-            throw new IllegalArgumentException("Идентификатор фильма не может быть null");
-        }
-        if (userId == null) {
-            throw new IllegalArgumentException("Идентификатор пользователя не может быть null");
-        }
+        Objects.requireNonNull(filmId, "filmId не должен быть null");
+        Objects.requireNonNull(userId, "userId не должен быть null");
+
         Film film = filmStorage.getFilmById(filmId);
         User user = userStorage.getUserById(userId);
 
@@ -67,12 +57,9 @@ public class FilmService {
     }
 
     public boolean removeLikeFilm(Long filmId, Long userId) {
-        if (filmId == null) {
-            throw new IllegalArgumentException("Идентификатор фильма не может быть null");
-        }
-        if (userId == null) {
-            throw new IllegalArgumentException("Идентификатор пользователя не может быть null");
-        }
+        Objects.requireNonNull(filmId, "filmId не должен быть null");
+        Objects.requireNonNull(userId, "userId не должен быть null");
+
         Film film = filmStorage.getFilmById(filmId);
         User user = userStorage.getUserById(userId);
 
@@ -88,10 +75,11 @@ public class FilmService {
         return likes.getOrDefault(filmId, Collections.emptySet());
     }
 
-    public List<Film> getMostPopularFilms(int count) {
+    public List<Film> getPopularFilms(int count) {
         return filmStorage.getAllFilms().stream()
-                .sorted(Comparator.comparingInt(f -> filmStorage.getLikes(f.getId()).size()))
+                .filter(film -> film.getLikes() != null && !film.getLikes().isEmpty())
+                .sorted((film1, film2) -> Integer.compare(film2.getLikes().size(), film1.getLikes().size()))
                 .limit(count)
-                .toList();
+                .collect(Collectors.toList());
     }
 }

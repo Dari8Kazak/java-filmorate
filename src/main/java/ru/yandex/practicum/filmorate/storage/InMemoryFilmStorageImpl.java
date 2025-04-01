@@ -52,11 +52,6 @@ public class InMemoryFilmStorageImpl implements FilmStorage {
         return films.values();
     }
 
-    @Override
-    public Set<Long> getLikes(Long filmId) {
-        return likes.getOrDefault(filmId, Collections.emptySet());
-    }
-
     private Long getNextId() {
         long currentId = films.keySet()
                 .stream()
