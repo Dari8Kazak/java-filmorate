@@ -41,13 +41,17 @@ public class Film {
     private Set<Long> likes = new HashSet<>();
 
     public void addLike(Long userId) {
-        if (likes == null) {
-            this.likes = new HashSet<>();
-        }
         likes.add(userId);
     }
 
     public void removeLike(Long userId) {
         likes.remove(userId);
+    }
+
+    public Set<Long> getLikes() {
+        if (likes == null) {
+            this.likes = new HashSet<>();
+        }
+        return likes;
     }
 }

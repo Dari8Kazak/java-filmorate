@@ -12,7 +12,6 @@ import java.util.*;
 @Component
 public class InMemoryUserStorageImpl implements UserStorage {
     private final Map<Long, User> users = new HashMap<>();
-    private final Map<Long, Set<Long>> friends = new HashMap<>();
 
     @Override
     public User createUser(User user) {
@@ -59,22 +58,5 @@ public class InMemoryUserStorageImpl implements UserStorage {
                 .max()
                 .orElse(0);
         return ++currentId;
-    }
-
-    @Override
-    public void addFriend(Long userId, Long friendId) {
-        friends.computeIfAbsent(userId, k -> new HashSet<>()).add(friendId);
-        friends.computeIfAbsent(friendId, k -> new HashSet<>()).add(userId);
-    }
-
-    @Override
-    public Set<Long> getFriends(Long userId) {
-        return friends.getOrDefault(userId, Collections.emptySet());
-    }
-
-    @Override
-    public void removeFriend(Long userId, Long friendId) {
-        friends.getOrDefault(userId, Collections.emptySet()).remove(friendId);
-        friends.getOrDefault(friendId, Collections.emptySet()).remove(userId);
     }
 }
