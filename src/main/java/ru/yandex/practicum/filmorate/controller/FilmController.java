@@ -15,7 +15,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Slf4j
 @RestController
@@ -40,13 +39,6 @@ public class FilmController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Set<Long>> getLikesFilm(@PathVariable Long id) {
-        Objects.requireNonNull(id, "id не должен быть null");
-        Set<Long> likes = filmService.getFilmById(id).getLikes();
-        return new ResponseEntity<>(likes, HttpStatus.OK);
-    }
-
-    @GetMapping("/{id}/film")
     public ResponseEntity<Film> getFilm(@PathVariable Long id) {
         Objects.requireNonNull(id, "id не должен быть null");
         Film film = filmService.getFilmById(id);

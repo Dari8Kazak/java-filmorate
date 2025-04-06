@@ -68,4 +68,18 @@ public class FilmService {
                 .limit(count)
                 .collect(Collectors.toList());
     }
+
+    private void validateFilm(Film film) {
+        // Добавьте логику для проверки допустимых значений жанров и рейтинга
+        List<String> validGenres = Arrays.asList("Комедия", "Драма", "Мультфильм", "Триллер", "Документальный", "Боевик");
+        if (film.getGenres().stream().anyMatch(genre -> !validGenres.contains(genre))) {
+            throw new ValidationException("Genre", "film", "Недопустимый жанр");
+        }
+
+        List<String> validRatings = Arrays.asList("G", "PG", "PG-13", "R", "NC-17");
+        if (!validRatings.contains(film.getMpa())) {
+            throw new ValidationException("Rating", "film", "Недопустимый рейтинг");
+        }
+    }
+
 }

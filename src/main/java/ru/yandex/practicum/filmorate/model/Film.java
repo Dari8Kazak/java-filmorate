@@ -40,6 +40,14 @@ public class Film {
     @Builder.Default
     private Set<Long> likes = new HashSet<>();
 
+    @Setter
+    @Getter
+    private Set<Genre> genres;
+
+    @Setter
+    @Getter
+    private Rate mpa;
+
     public void addLike(Long userId) {
         likes.add(userId);
     }
