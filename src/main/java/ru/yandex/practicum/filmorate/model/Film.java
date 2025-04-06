@@ -7,10 +7,16 @@ import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import ru.yandex.practicum.filmorate.annotation.ValidReleaseDate;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
+@Setter
+@Getter
 @Builder
 @Data
 public class Film {
@@ -30,4 +36,22 @@ public class Film {
     @PositiveOrZero
     @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Long duration;
+
+    @Builder.Default
+    private Set<Long> likes = new HashSet<>();
+
+    public void addLike(Long userId) {
+        likes.add(userId);
+    }
+
+    public void removeLike(Long userId) {
+        likes.remove(userId);
+    }
+
+    public Set<Long> getLikes() {
+        if (likes == null) {
+            this.likes = new HashSet<>();
+        }
+        return likes;
+    }
 }
