@@ -151,6 +151,3 @@ Ref: "MPA"."MPA_id" < "film_MPA"."MPA_id"
 
 Ref: "users"."id" < "birthday"."user_id"
 ```
-
-
-Примерно такую схему потребуется реализовать в конце модуля.
