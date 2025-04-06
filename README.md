@@ -4,8 +4,6 @@ Template repository for Filmorate project.
 ## Схема базы данных изображения
 ![Image](https://github.com/user-attachments/assets/0c0726a3-d4ba-428b-922d-12dd9f7f028e)
 
-Схема базы данных команды
-
 <details>
     <summary>
     Чтобы воссоздать ее в https://dbdiagram.io/ откройте список команд находящийся ниже.
@@ -151,6 +149,3 @@ Ref: "MPA"."MPA_id" < "film_MPA"."MPA_id"
 
 Ref: "users"."id" < "birthday"."user_id"
 ```
-
-
-Примерно такую схему потребуется реализовать в конце модуля.
