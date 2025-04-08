@@ -30,6 +30,9 @@ public class User {
     private LocalDate birthday;
 
     @Builder.Default
+    private Set<Friendship> friendships = new HashSet<>();
+
+    @Builder.Default
     private Set<Long> friends = new HashSet<>();
 
     public void addFriend(Long id) {
@@ -52,4 +55,5 @@ public class User {
         }
         return friends;
     }
+
 }

@@ -2,10 +2,7 @@
 Template repository for Filmorate project.
 
 ## Схема базы данных изображения
-![Image](https://github.com/user-attachments/assets/0c0726a3-d4ba-428b-922d-12dd9f7f028e)
-
- Схема базы данных команды
-
+![Image] (https://github.com/Dari8Kazak/java-filmorate/issues/5#issue-2979645122)
 <details>
     <summary>
     Чтобы воссоздать ее в https://dbdiagram.io/ откройте список команд находящийся ниже.
@@ -14,15 +11,15 @@ Template repository for Filmorate project.
 ```sql
 Table users {
 
-  id long
+  id long pk
 
-  name String
+  name String
 
-  login String
+  login String
 
-  email String
+  email String
 
-  birthday LocalDate
+  birthday LocalDate
 
 }
 
@@ -30,9 +27,9 @@ Table users {
 
 Table likes {
 
-  film_id Long
+  film_id Long pk
 
-  user_id Long
+  user_id Long
 
 }
 
@@ -40,35 +37,26 @@ Table likes {
 
 Table films {
 
-  id Long
+  id Long pk
 
-  name String
+  name String
 
-  description String
+  description String
 
-  releaseDate LocalData
+  releaseDate LocalData
 
-  duration Long
+  duration Long
 
-  rate Long
-
-}
-
-  
-
-Table birthday {
-
-  data LocalDate
-
-  user_id Long
+  rating Long
 
 }
+
 
 Table friendShip {
 
-  friend_id Long
+  friend_id Long
 
-  user_id Long
+  user_id Long
 
 }
 
@@ -76,9 +64,9 @@ Table friendShip {
 
 Table filmgenre {
 
-  film_id Long
+  film_id Long
 
-  genre_id Long
+  genre_id Long
 
 }
 
@@ -86,9 +74,9 @@ Table filmgenre {
 
 Table genres {
 
-  genre_id Long
+  genre_id Long pk
 
-  genre_name String
+  genre_name String pk
 
 }
 
@@ -96,19 +84,19 @@ Table genres {
 
 Table film_MPA {
 
-  MPA_id Long
+  MPA_id Long
 
-  MPA_name Long
+  MPA_name Long
 
 }
 
   
 
-Table MPA {
+Table  rating_MPA {
 
-  film_id Long
+  film_id Long
 
-  MPA_id Long
+  MPA_id Long
 
 }
 
@@ -141,13 +129,9 @@ Ref: "users"."id" < "friendShip"."user_id"
 
   
 
-Ref: "films"."id" < "MPA"."film_id"
+Ref: "films"."id" < "rating_MPA"."film_id"
 
-  
+Ref: "rating_MPA"."MPA_id" < "film_MPA"."MPA_id"
 
-Ref: "MPA"."MPA_id" < "film_MPA"."MPA_id"
-
-  
-
-Ref: "users"."id" < "birthday"."user_id"
 ```
+</details>
