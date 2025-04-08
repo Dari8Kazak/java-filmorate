@@ -2,7 +2,7 @@
 Template repository for Filmorate project.
 
 ## Схема базы данных изображения
-![Image] https://github.com/Dari8Kazak/java-filmorate/issues/5#issue-2979645122
+![Image] (https://github.com/Dari8Kazak/java-filmorate/issues/5#issue-2979645122)
 <details>
     <summary>
     Чтобы воссоздать ее в https://dbdiagram.io/ откройте список команд находящийся ниже.
@@ -134,3 +134,4 @@ Ref: "films"."id" < "rating_MPA"."film_id"
 Ref: "rating_MPA"."MPA_id" < "film_MPA"."MPA_id"
 
 ```
+</details>
