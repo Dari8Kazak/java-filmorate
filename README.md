@@ -2,8 +2,7 @@
 Template repository for Filmorate project.
 
 ## Схема базы данных изображения
-![Image](https://github.com/user-attachments/assets/0c0726a3-d4ba-428b-922d-12dd9f7f028e)
-
+![Image](https://github.com/user-attachments/assets/0ccf0c8f-a651-45d3-acdc-64ff7f82d592)
  Схема базы данных команды
 
 <details>
@@ -12,109 +11,91 @@ Template repository for Filmorate project.
     </summary> 
 
 ```sql
+
 Table users {
 
-  id long
+  id long pk
 
-  name String
+  name String
 
-  login String
+  login String
 
-  email String
+  email String
 
-  birthday LocalDate
+  birthday LocalDate
+
+  friends Long
 
 }
 
-  
+ Table films {
+
+  id Long pk
+
+  name String
+
+  description String
+
+  releaseDate LocalData
+
+  duration Long
+
+  likes Long 
+
+  genres Genre
+
+  mpa RatingMPA
+
+} 
+
+Table filmgenre {
+
+  film_id Long
+
+  genre_id Long
+
+}
+
+Table genres {
+
+  id Long pk
+
+  name String pk
+
+}
+
+Table film_MPA {
+
+  MPA_id Long
+
+  MPA_name Long
+
+}
+
+  Table  rating_MPA {
+
+  id Long
+
+  name String
+
+}
 
 Table likes {
 
-  film_id Long
+  film_id Long pk
 
-  user_id Long
-
-}
-
-  
-
-Table films {
-
-  id Long
-
-  name String
-
-  description String
-
-  releaseDate LocalData
-
-  duration Long
-
-  rate Long
-
-}
-
-  
-
-Table birthday {
-
-  data LocalDate
-
-  user_id Long
+  user_id Long
 
 }
 
 Table friendShip {
 
-  friend_id Long
+  friend_id Long
 
-  user_id Long
-
-}
-
-  
-
-Table filmgenre {
-
-  film_id Long
-
-  genre_id Long
+  user_id Long
 
 }
 
-  
-
-Table genres {
-
-  genre_id Long
-
-  genre_name String
-
-}
-
-  
-
-Table film_MPA {
-
-  MPA_id Long
-
-  MPA_name Long
-
-}
-
-  
-
-Table MPA {
-
-  film_id Long
-
-  MPA_id Long
-
-}
-
-  
-  
-  
   
 
 Ref: "films"."id" < "likes"."film_id"
@@ -129,7 +110,7 @@ Ref: "films"."id" < "filmgenre"."film_id"
 
   
 
-Ref: "genres"."genre_id" < "filmgenre"."genre_id"
+Ref: "genres"."id" < "filmgenre"."genre_id"
 
   
 
@@ -141,13 +122,10 @@ Ref: "users"."id" < "friendShip"."user_id"
 
   
 
-Ref: "films"."id" < "MPA"."film_id"
 
-  
 
-Ref: "MPA"."MPA_id" < "film_MPA"."MPA_id"
 
-  
+Ref: "films"."mpa" < "film_MPA"."MPA_id"
 
-Ref: "users"."id" < "birthday"."user_id"
+Ref: "film_MPA"."MPA_name" < "rating_MPA"."id"
 ```
