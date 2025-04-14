@@ -1,16 +1,12 @@
 package ru.yandex.practicum.filmorate.exception;
 
-import lombok.Getter;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-@Getter
+@ResponseStatus(value = HttpStatus.NOT_FOUND)
+
 public class ValidationException extends RuntimeException {
-    private final String entityType;
-    private final String field;
-
-    public ValidationException(String entityType, String field, String message) {
+    public ValidationException(String message) {
         super(message);
-        this.entityType = entityType;
-        this.field = field;
     }
-
 }

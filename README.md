@@ -11,7 +11,6 @@ Template repository for Filmorate project.
     </summary> 
 
 ```sql
-
 Table users {
 
   id long pk
@@ -129,3 +128,4 @@ Ref: "films"."mpa" < "film_MPA"."MPA_id"
 
 Ref: "film_MPA"."MPA_name" < "rating_MPA"."id"
 ```
+</details>
