@@ -2,7 +2,9 @@
 Template repository for Filmorate project.
 
 ## Схема базы данных изображения
-![Image] (https://github.com/Dari8Kazak/java-filmorate/issues/5#issue-2979645122)
+![Image](https://github.com/user-attachments/assets/0ccf0c8f-a651-45d3-acdc-64ff7f82d592)
+ Схема базы данных команды
+
 <details>
     <summary>
     Чтобы воссоздать ее в https://dbdiagram.io/ откройте список команд находящийся ниже.
@@ -21,21 +23,11 @@ Table users {
 
   birthday LocalDate
 
-}
-
-  
-
-Table likes {
-
-  film_id Long pk
-
-  user_id Long
+  friends Long
 
 }
 
-  
-
-Table films {
+ Table films {
 
   id Long pk
 
@@ -47,17 +39,51 @@ Table films {
 
   duration Long
 
-  rating Long
+  likes Long 
+
+  genres Genre
+
+  mpa RatingMPA
+
+} 
+
+Table filmgenre {
+
+  film_id Long
+
+  genre_id Long
 
 }
 
-  
+Table genres {
 
-Table birthday {
+  id Long pk
 
-  data LocalDate
+  name String pk
 
-  user_id Long
+}
+
+Table film_MPA {
+
+  MPA_id Long
+
+  MPA_name Long
+
+}
+
+  Table  rating_MPA {
+
+  id Long
+
+  name String
+
+}
+
+Table likes {
+
+  film_id Long pk
+
+  user_id Long
 
 }
 
@@ -69,49 +95,6 @@ Table friendShip {
 
 }
 
-  
-
-Table filmgenre {
-
-  film_id Long
-
-  genre_id Long
-
-}
-
-  
-
-Table genres {
-
-  genre_id Long pk
-
-  genre_name String pk
-
-}
-
-  
-
-Table film_MPA {
-
-  MPA_id Long
-
-  MPA_name Long
-
-}
-
-  
-
-Table  rating_MPA {
-
-  film_id Long
-
-  MPA_id Long
-
-}
-
-  
-  
-  
   
 
 Ref: "films"."id" < "likes"."film_id"
@@ -126,7 +109,7 @@ Ref: "films"."id" < "filmgenre"."film_id"
 
   
 
-Ref: "genres"."genre_id" < "filmgenre"."genre_id"
+Ref: "genres"."id" < "filmgenre"."genre_id"
 
   
 
@@ -138,9 +121,11 @@ Ref: "users"."id" < "friendShip"."user_id"
 
   
 
-Ref: "films"."id" < "rating_MPA"."film_id"
 
-Ref: "rating_MPA"."MPA_id" < "film_MPA"."MPA_id"
 
+
+Ref: "films"."mpa" < "film_MPA"."MPA_id"
+
+Ref: "film_MPA"."MPA_name" < "rating_MPA"."id"
 ```
 </details>
