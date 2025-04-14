@@ -3,9 +3,9 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-@Data
 @AllArgsConstructor
-public class Rate {
-    private Integer id;
+@Data
+public class RatingMPA {
+    private Long id;
     private String name;
 }

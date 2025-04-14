@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +16,6 @@ import java.util.Set;
 
 @Setter
 @Getter
-@Builder
 @Data
 public class Film {
     private Long id;
@@ -37,7 +35,6 @@ public class Film {
     @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Long duration;
 
-    @Builder.Default
     private Set<Long> likes = new HashSet<>();
 
     @Setter
@@ -46,20 +43,5 @@ public class Film {
 
     @Setter
     @Getter
-    private Rate mpa;
-
-    public void addLike(Long userId) {
-        likes.add(userId);
-    }
-
-    public void removeLike(Long userId) {
-        likes.remove(userId);
-    }
-
-    public Set<Long> getLikes() {
-        if (likes == null) {
-            this.likes = new HashSet<>();
-        }
-        return likes;
-    }
+    private RatingMPA mpa;
 }

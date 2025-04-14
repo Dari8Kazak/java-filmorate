@@ -1,85 +1,27 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-public class FilmService {
-    private final FilmStorage filmStorage;
-    private final UserStorage userStorage;
+public interface FilmService {
 
-    public Film createFilm(Film film) {
-        return filmStorage.createFilm(film);
-    }
+    Collection<Film> getAllFilms();
 
-    public Film updateFilm(Film film) {
-        return filmStorage.updateFilm(film);
-    }
+    List<Film> getPopularFilms(int count);
 
-    public Film getFilmById(Long filmId) {
-        return filmStorage.getFilmById(filmId);
-    }
+    Film getFilmById(Long filmId);
 
-    public void deleteFilm(Long filmId) {
-        filmStorage.deleteFilm(filmId);
-    }
+    Film createFilm(Film film);
 
-    public Collection<Film> getAllFilms() {
-        return filmStorage.getAllFilms();
-    }
+    Film updateFilm(Film newFilm);
 
-    public void addLikeFilm(Long filmId, Long userId) {
+    void addLikeFilm(Long filmId, Long userId);
 
-        Film film = filmStorage.getFilmById(filmId);
-        User user = userStorage.getUserById(userId);
+    boolean removeLikeFilm(Long filmId, Long userId);
 
-        if (film.getLikes().contains(userId)) {
-            throw new ValidationException("Lke", "userId", "Пользователь уже ставил лайк");
-        }
-        film.addLike(userId);
-        filmStorage.updateFilm(film);
-    }
+    void deleteFilm(Long filmId);
 
-    public boolean removeLikeFilm(Long filmId, Long userId) {
-
-        Film film = filmStorage.getFilmById(filmId);
-        User user = userStorage.getUserById(userId);
-
-        if (!film.getLikes().contains(userId)) {
-            throw new ValidationException("Lke", "userId", "У фильма нет лайков");
-        }
-        film.removeLike(userId);
-        filmStorage.updateFilm(film);
-        return false;
-    }
-
-    public List<Film> getPopularFilms(int count) {
-        return filmStorage.getAllFilms().stream()
-                .sorted((film1, film2) -> Integer.compare(film2.getLikes().size(), film1.getLikes().size()))
-                .limit(count)
-                .collect(Collectors.toList());
-    }
-
-    private void validateFilm(Film film) {
-        // Добавьте логику для проверки допустимых значений жанров и рейтинга
-        List<String> validGenres = Arrays.asList("Комедия", "Драма", "Мультфильм", "Триллер", "Документальный", "Боевик");
-        if (film.getGenres().stream().anyMatch(genre -> !validGenres.contains(genre))) {
-            throw new ValidationException("Genre", "film", "Недопустимый жанр");
-        }
-
-        List<String> validRatings = Arrays.asList("G", "PG", "PG-13", "R", "NC-17");
-        if (!validRatings.contains(film.getMpa())) {
-            throw new ValidationException("Rating", "film", "Недопустимый рейтинг");
-        }
-    }
-
+    void checkForRelatedData(Film film);
 }
