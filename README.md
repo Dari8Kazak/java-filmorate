@@ -51,6 +51,15 @@ Table films {
 
 }
 
+  
+
+Table birthday {
+
+  data LocalDate
+
+  user_id Long
+
+}
 
 Table friendShip {
 
